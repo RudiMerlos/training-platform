@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface EmployeeCourseRepository extends JpaRepository<Long, EmployeeCourse> {
+public interface EmployeeCourseRepository extends JpaRepository<EmployeeCourse, Long> {
 
     List<EmployeeCourse> findByEmployee(Employee employee);
 

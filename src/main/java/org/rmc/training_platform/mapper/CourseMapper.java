@@ -1,6 +1,7 @@
 package org.rmc.training_platform.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.rmc.training_platform.domain.Course;
 import org.rmc.training_platform.dto.CourseReadDto;
 import org.rmc.training_platform.dto.CourseWriteDto;
@@ -15,5 +16,7 @@ public interface CourseMapper {
     List<CourseReadDto> entityToDto(List<Course> entities);
 
     Course dtoToEntity(CourseWriteDto dto);
+
+    void updateEntityFromDto(CourseWriteDto dto, @MappingTarget Course course);
 
 }
