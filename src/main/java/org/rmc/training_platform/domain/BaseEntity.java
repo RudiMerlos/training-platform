@@ -1,8 +1,9 @@
 package org.rmc.training_platform.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,8 +14,9 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Data
-@SuperBuilder
+@Getter
+@Setter
+@EqualsAndHashCode
 public abstract class BaseEntity implements Serializable {
 
     @Serial

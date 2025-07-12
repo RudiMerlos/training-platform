@@ -1,9 +1,9 @@
 package org.rmc.training_platform.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 import org.rmc.training_platform.domain.enumeration.Status;
 
 import java.io.Serial;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @Entity
 @Table(name = "employee_course", uniqueConstraints = @UniqueConstraint(columnNames = {"employee_id", "course_id"}))
 public class EmployeeCourse extends BaseEntity {
