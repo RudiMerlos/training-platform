@@ -2,8 +2,6 @@ package org.rmc.training_platform.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import org.rmc.training_platform.service.MessageService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,8 +14,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
-
-    private final MessageService messageService;
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -47,16 +43,28 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler(IllegalStatusException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalStatus(IllegalStatusException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return new ErrorResponse(HttpStatus.CONFLICT.value(), this.messageService.get("data.integrity.violation.error"));
+    public ErrorResponse handleDuplicateEmailException(DuplicateEmailException ex) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateNameException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateNameException(DuplicateNameException ex) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGeneric(Exception ex) {
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.messageService.get("internal.error"));
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
     }
 
     private String formatFieldError(FieldError error) {

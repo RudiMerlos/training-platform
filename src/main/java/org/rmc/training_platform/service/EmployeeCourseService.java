@@ -7,11 +7,13 @@ import org.rmc.training_platform.domain.Employee;
 import org.rmc.training_platform.domain.EmployeeCourse;
 import org.rmc.training_platform.domain.enumeration.Status;
 import org.rmc.training_platform.dto.EmployeeCourseReadDto;
+import org.rmc.training_platform.exception.IllegalStatusException;
 import org.rmc.training_platform.exception.ResourceNotFoundException;
 import org.rmc.training_platform.mapper.EmployeeCourseMapper;
 import org.rmc.training_platform.repository.CourseRepository;
 import org.rmc.training_platform.repository.EmployeeCourseRepository;
 import org.rmc.training_platform.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class EmployeeCourseService {
     private final EmployeeCourseMapper employeeCourseMapper;
     private final MessageService messageService;
 
+    @Autowired
     @Setter
     private Clock clock;
 
@@ -55,7 +58,7 @@ public class EmployeeCourseService {
 
         boolean alreadyAssigned = this.employeeCourseRepository.existsByEmployeeAndCourse(employee, course);
         if (alreadyAssigned) {
-            throw new IllegalStateException(this.messageService.get("employee.course.is.already.assigned"));
+            throw new IllegalStatusException(this.messageService.get("employee.course.is.already.assigned"));
         }
 
         EmployeeCourse employeeCourse = EmployeeCourse.builder()
@@ -72,7 +75,7 @@ public class EmployeeCourseService {
         EmployeeCourse employeeCourse = this.getEmployeeCourseById(employeeCourseId);
 
         if (employeeCourse.getStatus() != Status.ASSIGNED) {
-            throw new IllegalStateException(this.messageService.get("employee.course.mark.as.completed"));
+            throw new IllegalStatusException(this.messageService.get("employee.course.mark.as.completed"));
         }
 
         LocalDate assignedDate = employeeCourse.getAssignedOn();
@@ -100,7 +103,7 @@ public class EmployeeCourseService {
 
     private EmployeeCourse getEmployeeCourseById(Long employeeCourseId) {
         return this.employeeCourseRepository.findById(employeeCourseId).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("employee.course.not.found", employeeCourseId)));
+                new ResourceNotFoundException(this.messageService.get("employee.course.not.found")));
     }
 
 }
