@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,9 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
     @Override
     @Transactional(readOnly = true)
     public EmployeeReadDto getById(Long id) {
-        return this.employeeMapper.entityToDto(this.getEmployeeById(id));
+        Employee employee = this.employeeRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(this.messageService.get("employee.not.found", id)));
+        return this.employeeMapper.entityToDto(employee);
     }
 
     @Override
@@ -55,15 +58,15 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
         this.employeeRepository.deleteById(id);
     }
 
-    private Employee getEmployeeById(Long employeeId) {
+    private Employee getEmployeeById(Long employeeId) throws ResourceNotFoundException {
         return this.employeeRepository.findById(employeeId).orElseThrow(() ->
                 new ResourceNotFoundException(this.messageService.get("employee.not.found", employeeId)));
     }
 
     @Transactional(readOnly = true)
     public EmployeeReadDto getByEmail(String email) {
-        return this.employeeRepository.findByEmail(email).map(this.employeeMapper::entityToDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee with email " + email + " not found"));
+        return this.employeeRepository.findByEmail(email).map(this.employeeMapper::entityToDto).orElseThrow(()->
+                new ResourceNotFoundException(this.messageService.get("employee.email.not.found", email)));
     }
 
 }

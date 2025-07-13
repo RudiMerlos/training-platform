@@ -60,4 +60,10 @@ public class CourseService implements CrudBaseService<CourseWriteDto, CourseRead
                 new ResourceNotFoundException(this.messageService.get("course.not.found", courseId)));
     }
 
+    @Transactional(readOnly = true)
+    public CourseReadDto getByName(String name) {
+        return this.courseRepository.findByName(name).map(this.courseMapper::entityToDto).orElseThrow(() ->
+                new ResourceNotFoundException(this.messageService.get("course.name.not.found", name)));
+    }
+
 }
