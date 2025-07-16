@@ -16,7 +16,7 @@ public class EmployeeController extends CrudBaseController<EmployeeWriteDto, Emp
 
     private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(final EmployeeService employeeService) {
         super(employeeService);
         this.employeeService = employeeService;
     }

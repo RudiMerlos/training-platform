@@ -1,4 +1,4 @@
-package org.rmc.training_platform.exception;
+package org.rmc.training_platform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

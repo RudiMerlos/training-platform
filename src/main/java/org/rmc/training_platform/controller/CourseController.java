@@ -22,7 +22,7 @@ public class CourseController extends CrudBaseController<CourseWriteDto, CourseR
     }
 
     @GetMapping("/by-name")
-    public CourseReadDto getByName(@RequestParam String name) {
+    public CourseReadDto getByName(@RequestParam final String name) {
         return this.courseService.getByName(name);
     }
 
