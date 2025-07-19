@@ -1,8 +1,8 @@
-package org.rmc.training_platform.security.service;
+package org.rmc.training_platform.service;
 
 import lombok.RequiredArgsConstructor;
-import org.rmc.training_platform.security.domain.UserApp;
-import org.rmc.training_platform.security.repository.UserRepository;
+import org.rmc.training_platform.domain.UserApp;
+import org.rmc.training_platform.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +28,14 @@ public class UserService implements UserDetailsService {
         userApp.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getRole().getName())));
 
         return new User(userApp.getUsername(), userApp.getPassword(), authorities);
+    }
+
+    public boolean exixtsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+
+    public void save(UserApp user) {
+        this.userRepository.save(user);
     }
 
 }

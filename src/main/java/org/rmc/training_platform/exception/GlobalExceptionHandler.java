@@ -55,15 +55,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
+    @ExceptionHandler(DuplicateFieldException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicateEmailException(DuplicateEmailException ex) {
-        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
-    }
-
-    @ExceptionHandler(DuplicateNameException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicateNameException(DuplicateNameException ex) {
+    public ErrorResponse handleDuplicateFieldException(DuplicateEmailException ex) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 

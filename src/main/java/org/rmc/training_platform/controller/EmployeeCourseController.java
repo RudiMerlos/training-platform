@@ -2,8 +2,8 @@ package org.rmc.training_platform.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.rmc.training_platform.security.annotations.RoleAdmin;
-import org.rmc.training_platform.security.annotations.RoleUser;
+import org.rmc.training_platform.annotations.RoleAdmin;
+import org.rmc.training_platform.annotations.RoleUser;
 import org.rmc.training_platform.dto.EmployeeCourseReadDto;
 import org.rmc.training_platform.service.EmployeeCourseService;
 import org.springframework.http.HttpStatus;

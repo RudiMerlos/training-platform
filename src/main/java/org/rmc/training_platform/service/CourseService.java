@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.domain.Course;
 import org.rmc.training_platform.dto.CourseReadDto;
 import org.rmc.training_platform.dto.CourseWriteDto;
-import org.rmc.training_platform.exception.DuplicateNameException;
+import org.rmc.training_platform.exception.DuplicateFieldException;
 import org.rmc.training_platform.exception.ResourceNotFoundException;
 import org.rmc.training_platform.mapper.CourseMapper;
 import org.rmc.training_platform.repository.CourseRepository;
@@ -75,7 +75,7 @@ public class CourseService implements CrudBaseService<CourseWriteDto, CourseRead
 
     private void checkIfExistsName(String name) {
         if (this.courseRepository.existsByName(name)) {
-            throw new DuplicateNameException(this.messageService.get("course.name.already.exists", name));
+            throw new DuplicateFieldException(this.messageService.get("course.name.already.exists", name));
         }
     }
 

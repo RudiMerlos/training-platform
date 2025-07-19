@@ -1,8 +1,8 @@
 package org.rmc.training_platform.controller;
 
 import jakarta.validation.Valid;
-import org.rmc.training_platform.security.annotations.RoleAdmin;
-import org.rmc.training_platform.security.annotations.RoleUser;
+import org.rmc.training_platform.annotations.RoleAdmin;
+import org.rmc.training_platform.annotations.RoleUser;
 import org.rmc.training_platform.service.CrudBaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

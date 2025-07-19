@@ -1,4 +1,4 @@
-package org.rmc.training_platform.security.annotations;
+package org.rmc.training_platform.annotations;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

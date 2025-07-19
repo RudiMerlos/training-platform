@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.domain.Employee;
 import org.rmc.training_platform.dto.EmployeeReadDto;
 import org.rmc.training_platform.dto.EmployeeWriteDto;
-import org.rmc.training_platform.exception.DuplicateEmailException;
+import org.rmc.training_platform.exception.DuplicateFieldException;
 import org.rmc.training_platform.exception.ResourceNotFoundException;
 import org.rmc.training_platform.mapper.EmployeeMapper;
 import org.rmc.training_platform.repository.EmployeeRepository;
@@ -75,7 +75,7 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
 
     private void checkIfExistsEmail(String email) {
         if (this.employeeRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException(this.messageService.get("employee.email.already.exists", email));
+            throw new DuplicateFieldException(this.messageService.get("employee.email.already.exists", email));
         }
     }
 

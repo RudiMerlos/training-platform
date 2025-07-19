@@ -1,4 +1,4 @@
-package org.rmc.training_platform.security.domain;
+package org.rmc.training_platform.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

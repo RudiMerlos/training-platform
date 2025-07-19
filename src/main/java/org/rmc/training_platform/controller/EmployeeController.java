@@ -1,7 +1,7 @@
 package org.rmc.training_platform.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.rmc.training_platform.security.annotations.RoleUser;
+import org.rmc.training_platform.annotations.RoleUser;
 import org.rmc.training_platform.dto.EmployeeReadDto;
 import org.rmc.training_platform.dto.EmployeeWriteDto;
 import org.rmc.training_platform.service.EmployeeService;
