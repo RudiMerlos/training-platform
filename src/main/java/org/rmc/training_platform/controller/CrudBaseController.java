@@ -1,6 +1,8 @@
 package org.rmc.training_platform.controller;
 
 import jakarta.validation.Valid;
+import org.rmc.training_platform.security.annotations.RoleAdmin;
+import org.rmc.training_platform.security.annotations.RoleUser;
 import org.rmc.training_platform.service.CrudBaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,27 +23,32 @@ public abstract class CrudBaseController<TWriteDto, TReadDto> {
         this.service = service;
     }
 
+    @RoleUser
     @GetMapping
     public List<TReadDto> getAll() {
         return this.service.getAll();
     }
 
+    @RoleUser
     @GetMapping("/{id}")
     public TReadDto getById(@PathVariable final Long id) {
         return this.service.getById(id);
     }
 
+    @RoleAdmin
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TReadDto create(@Valid @RequestBody final TWriteDto writeDto) {
         return this.service.create(writeDto);
     }
 
+    @RoleAdmin
     @PutMapping("/{id}")
     public TReadDto update(@PathVariable final Long id, @Valid @RequestBody final TWriteDto writeDto) {
         return this.service.update(id, writeDto);
     }
 
+    @RoleAdmin
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final Long id) {

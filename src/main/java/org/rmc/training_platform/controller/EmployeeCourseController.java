@@ -2,6 +2,8 @@ package org.rmc.training_platform.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.rmc.training_platform.security.annotations.RoleAdmin;
+import org.rmc.training_platform.security.annotations.RoleUser;
 import org.rmc.training_platform.dto.EmployeeCourseReadDto;
 import org.rmc.training_platform.service.EmployeeCourseService;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ import java.util.List;
 @RequestMapping("/api/employee-courses")
 @RequiredArgsConstructor
 @Tag(name = "Training", description = "Management of course assignments to employees.")
+@RoleAdmin
 public class EmployeeCourseController {
 
     private final EmployeeCourseService employeeCourseService;
 
+    @RoleUser
     @GetMapping("/employee/{employeeId}")
     public List<EmployeeCourseReadDto> getAllCoursesForEmployee(@PathVariable final Long employeeId) {
         return this.employeeCourseService.getCoursesByEmployee(employeeId);
