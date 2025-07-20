@@ -20,7 +20,6 @@ import org.rmc.training_platform.domain.enumeration.Role;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data

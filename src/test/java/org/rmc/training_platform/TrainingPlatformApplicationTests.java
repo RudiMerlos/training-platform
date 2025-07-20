@@ -6,10 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TrainingPlatformApplicationTests {
 
-/*	@Test
+	@Test
 	void contextLoads() {
 	}
-
- */
 
 }
