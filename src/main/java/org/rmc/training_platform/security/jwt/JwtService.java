@@ -21,15 +21,14 @@ public class JwtService {
     @Value("${spring.security.jwt.expiration}")
     private Long expiration;
 
-    private final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-
     public String generateToken(Authentication authentication) {
         UserDetails mainUser = (UserDetails) authentication.getPrincipal();
+        final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .subject(mainUser.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(this.key)
+                .signWith(key)
                 .compact();
     }
 
@@ -43,8 +42,9 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
+        final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.parser()
-                .verifyWith(this.key)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

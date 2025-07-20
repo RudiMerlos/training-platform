@@ -1,12 +1,11 @@
 package org.rmc.training_platform.service;
+
 import lombok.RequiredArgsConstructor;
-import org.rmc.training_platform.domain.Role;
-import org.rmc.training_platform.domain.UserApp;
-import org.rmc.training_platform.domain.enumeration.RoleType;
-import org.rmc.training_platform.dto.UserDto;
+import org.rmc.training_platform.domain.User;
+import org.rmc.training_platform.domain.enumeration.Role;
+import org.rmc.training_platform.dto.UserReadDto;
+import org.rmc.training_platform.dto.UserWriteDto;
 import org.rmc.training_platform.exception.DuplicateFieldException;
-import org.rmc.training_platform.exception.ResourceNotFoundException;
-import org.rmc.training_platform.repository.RoleRepository;
 import org.rmc.training_platform.security.jwt.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +23,10 @@ public class AuthService {
     private final UserService userService;
     private final JwtService jwtService;
     private final MessageService messageService;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public String authenticate(final UserDto user) {
+    public String authenticate(final UserReadDto user) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(),
                 user.getPassword());
         Authentication authResult = this.authenticationManagerBuilder.getObject().authenticate(authToken);
@@ -36,37 +34,27 @@ public class AuthService {
         return this.jwtService.generateToken(authResult);
     }
 
-    public void registerUser(final UserDto userDto) {
-        this.checkIfUserExists(userDto.getUsername());
+    public void register(final UserWriteDto user) {
+        this.checkIfUserExists(user.getUsername());
 
-        Role roleUser = this.roleRepository.findByRole(RoleType.USER)
-                .orElseThrow(() -> new ResourceNotFoundException(this.messageService.get("role.not.found",
-                        RoleType.USER.name())));
-
-        this.saveUser(userDto, roleUser);
+        this.saveUser(user);
     }
 
-    public void registerAdmin(final UserDto userDto) {
-        this.checkIfUserExists(userDto.getUsername());
-
-        Role roleAdmin = this.roleRepository.findByRole(RoleType.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException(this.messageService.get("role.not.found",
-                        RoleType.ADMIN.name())));
-
-        this.saveUser(userDto, roleAdmin);
+    public List<Role> getAllRoles() {
+        return List.of(Role.values());
     }
 
     private void checkIfUserExists(String username) {
-        if (this.userService.exixtsByUsername(username)) {
-            throw new DuplicateFieldException(this.messageService.get("user.name.already.exists"));
+        if (this.userService.existsByUsername(username)) {
+            throw new DuplicateFieldException(this.messageService.get("user.name.already.exists", username));
         }
     }
 
-    private void saveUser(UserDto userDto, Role role) {
-        UserApp user = UserApp.builder()
+    private void saveUser(UserWriteDto userDto) {
+        User user = User.builder()
                 .username(userDto.getUsername())
                 .password(this.passwordEncoder.encode(userDto.getPassword()))
-                .roles(Set.of(role))
+                .roles(userDto.getRoles())
                 .build();
         this.userService.save(user);
     }

@@ -1,10 +1,9 @@
 package org.rmc.training_platform.service;
 
 import lombok.RequiredArgsConstructor;
-import org.rmc.training_platform.domain.UserApp;
+import org.rmc.training_platform.domain.User;
 import org.rmc.training_platform.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,20 +20,21 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserApp userApp = this.userRepository.findByUsername(username)
+        User user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        userApp.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getRole().getName())));
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
 
-        return new User(userApp.getUsername(), userApp.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                authorities);
     }
 
-    public boolean exixtsByUsername(String username) {
+    public boolean existsByUsername(String username) {
         return this.userRepository.existsByUsername(username);
     }
 
-    public void save(UserApp user) {
+    public void save(User user) {
         this.userRepository.save(user);
     }
 
