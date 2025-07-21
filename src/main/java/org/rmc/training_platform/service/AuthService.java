@@ -7,6 +7,7 @@ import org.rmc.training_platform.dto.UserReadDto;
 import org.rmc.training_platform.dto.UserWriteDto;
 import org.rmc.training_platform.exception.DuplicateFieldException;
 import org.rmc.training_platform.security.jwt.JwtService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -29,12 +30,21 @@ public class AuthService {
     public String authenticate(final UserReadDto user) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(),
                 user.getPassword());
-        Authentication authResult = this.authenticationManagerBuilder.getObject().authenticate(authToken);
+
+        Authentication authResult;
+        try {
+            authResult = this.authenticationManagerBuilder.getObject().authenticate(authToken);
+        } catch(Exception ex) {
+            throw new BadCredentialsException(this.messageService.get("user.incorrect.credentials"));
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authResult);
         return this.jwtService.generateToken(authResult);
     }
 
     public void register(final UserWriteDto user) {
+        this.checkAllFieldsRequired(user);
+
         this.checkIfUserExists(user.getUsername());
 
         this.saveUser(user);
@@ -42,6 +52,25 @@ public class AuthService {
 
     public List<Role> getAllRoles() {
         return List.of(Role.values());
+    }
+
+    private void checkAllFieldsRequired(final UserWriteDto user) {
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            throw new IllegalArgumentException(this.messageService.get("user.username.required"));
+        }
+        if (user.getPassword() == null) {
+            throw new IllegalArgumentException(this.messageService.get("user.password.required"));
+        }
+        if (!checkValidPassword(user.getPassword())) {
+            throw new IllegalArgumentException(this.messageService.get("user.password.valid"));
+        }
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            throw new IllegalArgumentException(this.messageService.get("user.roles.required"));
+        }
+    }
+
+    private static boolean checkValidPassword(String password) {
+        return password.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$");
     }
 
     private void checkIfUserExists(String username) {
