@@ -54,25 +54,6 @@ public class AuthService {
         return List.of(Role.values());
     }
 
-    private void checkAllFieldsRequired(final UserWriteDto user) {
-        if (user.getUsername() == null || user.getUsername().isBlank()) {
-            throw new IllegalArgumentException(this.messageService.get("user.username.required"));
-        }
-        if (user.getPassword() == null) {
-            throw new IllegalArgumentException(this.messageService.get("user.password.required"));
-        }
-        if (!checkValidPassword(user.getPassword())) {
-            throw new IllegalArgumentException(this.messageService.get("user.password.valid"));
-        }
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            throw new IllegalArgumentException(this.messageService.get("user.roles.required"));
-        }
-    }
-
-    private static boolean checkValidPassword(String password) {
-        return password.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$");
-    }
-
     private void checkIfUserExists(String username) {
         if (this.userService.existsByUsername(username)) {
             throw new DuplicateFieldException(this.messageService.get("user.name.already.exists", username));
