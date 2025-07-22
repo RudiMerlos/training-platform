@@ -43,8 +43,6 @@ public class AuthService {
     }
 
     public void register(final UserWriteDto user) {
-        //this.checkAllFieldsRequired(user);
-
         this.checkIfUserExists(user.getUsername());
 
         this.saveUser(user);

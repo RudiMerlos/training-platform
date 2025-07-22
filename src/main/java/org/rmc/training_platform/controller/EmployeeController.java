@@ -1,5 +1,6 @@
 package org.rmc.training_platform.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.rmc.training_platform.annotations.RoleUser;
 import org.rmc.training_platform.dto.EmployeeReadDto;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/employees")
 @Tag(name = "Employees", description = "Employee related operations.")

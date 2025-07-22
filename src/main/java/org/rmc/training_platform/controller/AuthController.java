@@ -1,5 +1,7 @@
 package org.rmc.training_platform.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.annotations.RoleAdmin;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authorization", description = "Login and registration users.")
 public class AuthController {
 
     private final AuthService authService;
