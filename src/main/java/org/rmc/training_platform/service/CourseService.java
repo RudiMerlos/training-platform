@@ -1,6 +1,7 @@
 package org.rmc.training_platform.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.rmc.training_platform.domain.Course;
 import org.rmc.training_platform.dto.CourseReadDto;
 import org.rmc.training_platform.dto.CourseWriteDto;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -36,13 +38,16 @@ public class CourseService implements CrudBaseService<CourseWriteDto, CourseRead
 
     @Override
     public CourseReadDto create(CourseWriteDto courseWrite) {
+        LOGGER.info("Creating course with name: {}", courseWrite.getName());
         this.checkIfExistsName(courseWrite.getName());
         Course course = this.courseRepository.save(this.courseMapper.dtoToEntity(courseWrite));
+        LOGGER.debug("Course created with ID: {}", course.getId());
         return this.courseMapper.entityToDto(course);
     }
 
     @Override
     public CourseReadDto update(Long id, CourseWriteDto courseWrite) {
+        LOGGER.info("Updating course with ID: {}", id);
         Course course = this.getCourseById(id);
 
         String name = courseWrite.getName();
@@ -51,30 +56,38 @@ public class CourseService implements CrudBaseService<CourseWriteDto, CourseRead
         }
 
         this.courseMapper.updateEntityFromDto(courseWrite, course);
+        LOGGER.debug("Course with ID {} updated", id);
         return this.courseMapper.entityToDto(this.courseRepository.save(course));
     }
 
     @Override
     public void delete(Long id) {
+        LOGGER.info("Deleting course with ID: {}", id);
         if (!this.courseRepository.existsById(id)) {
             throw new ResourceNotFoundException(this.messageService.get("course.not.found", id));
         }
         this.courseRepository.deleteById(id);
+        LOGGER.debug("Course with ID {} deleted", id);
     }
 
     @Transactional(readOnly = true)
     public CourseReadDto getByName(String name) {
-        return this.courseRepository.findByName(name).map(this.courseMapper::entityToDto).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("course.name.not.found", name)));
+        return this.courseRepository.findByName(name).map(this.courseMapper::entityToDto).orElseThrow(() -> {
+            LOGGER.error("Course with name {} not exists", name);
+            return new ResourceNotFoundException(this.messageService.get("course.name.not.found", name));
+        });
     }
 
     private Course getCourseById(Long courseId) {
-        return this.courseRepository.findById(courseId).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("course.not.found", courseId)));
+        return this.courseRepository.findById(courseId).orElseThrow(() -> {
+            LOGGER.error("Course with ID {} not exists", courseId);
+            return new ResourceNotFoundException(this.messageService.get("course.not.found", courseId));
+        });
     }
 
     private void checkIfExistsName(String name) {
         if (this.courseRepository.existsByName(name)) {
+            LOGGER.error("Course with name {} already exists", name);
             throw new DuplicateFieldException(this.messageService.get("course.name.already.exists", name));
         }
     }

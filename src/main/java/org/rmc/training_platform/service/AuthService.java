@@ -1,6 +1,7 @@
 package org.rmc.training_platform.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.rmc.training_platform.domain.User;
 import org.rmc.training_platform.domain.enumeration.Role;
 import org.rmc.training_platform.dto.UserLoginDto;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -28,6 +30,7 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public String authenticate(final UserLoginDto user) {
+        LOGGER.info("Login user with username: {}", user.getUsername());
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(),
                 user.getPassword());
 
@@ -35,17 +38,21 @@ public class AuthService {
         try {
             authResult = this.authenticationManagerBuilder.getObject().authenticate(authToken);
         } catch(Exception ex) {
+            LOGGER.error("Username or password incorrect");
             throw new BadCredentialsException(this.messageService.get("user.incorrect.credentials"));
         }
 
         SecurityContextHolder.getContext().setAuthentication(authResult);
+        LOGGER.debug("User successfully loged in");
         return this.jwtService.generateToken(authResult);
     }
 
     public void register(final UserWriteDto user) {
+        LOGGER.info("Registering user with username: {}, and roles {}", user.getUsername(), user.getRoles());
         this.checkIfUserExists(user.getUsername());
 
         this.saveUser(user);
+        LOGGER.debug("User {} registered successfully", user.getUsername());
     }
 
     public List<Role> getAllRoles() {
@@ -54,6 +61,7 @@ public class AuthService {
 
     private void checkIfUserExists(String username) {
         if (this.userService.existsByUsername(username)) {
+            LOGGER.error("Username {} already exists", username);
             throw new DuplicateFieldException(this.messageService.get("user.name.already.exists", username));
         }
     }

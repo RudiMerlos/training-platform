@@ -2,6 +2,7 @@ package org.rmc.training_platform.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.rmc.training_platform.domain.Course;
 import org.rmc.training_platform.domain.Employee;
 import org.rmc.training_platform.domain.EmployeeCourse;
@@ -21,6 +22,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -53,11 +55,13 @@ public class EmployeeCourseService {
     }
 
     public EmployeeCourseDto assignCourse(Long employeeId, Long courseId) {
+        LOGGER.info("Assigning employee with ID {} to course with ID {}", employeeId, courseId);
         Employee employee = this.getEmployeeById(employeeId);
         Course course = this.getCourseById(courseId);
 
         boolean alreadyAssigned = this.employeeCourseRepository.existsByEmployeeAndCourse(employee, course);
         if (alreadyAssigned) {
+            LOGGER.error("Employee with ID {} is already assigned to course with ID {}", employeeId, courseId);
             throw new IllegalStatusException(this.messageService.get("employee.course.is.already.assigned"));
         }
 
@@ -68,10 +72,13 @@ public class EmployeeCourseService {
                 .status(Status.ASSIGNED)
                 .build();
 
-        return this.employeeCourseMapper.entityToDto(this.employeeCourseRepository.save(employeeCourse));
+        EmployeeCourse savedEmployeeCourse = this.employeeCourseRepository.save(employeeCourse);
+        LOGGER.debug("EmployeeCourse created with ID: {}", savedEmployeeCourse.getId());
+        return this.employeeCourseMapper.entityToDto(savedEmployeeCourse);
     }
 
     public void markAsCompleted(Long employeeCourseId) {
+        LOGGER.info("Marking as completed employeeCourse with ID: {}", employeeCourseId);
         EmployeeCourse employeeCourse = this.getEmployeeCourseById(employeeCourseId);
 
         if (employeeCourse.getStatus() != Status.ASSIGNED) {
@@ -88,22 +95,30 @@ public class EmployeeCourseService {
             employeeCourse.setStatus(Status.COMPLETED);
         }
 
-        this.employeeCourseRepository.save(employeeCourse);
+        EmployeeCourse savedEmployeeCourse = this.employeeCourseRepository.save(employeeCourse);
+        LOGGER.debug("EmployeeCourse with ID {} has been marked by status {}", savedEmployeeCourse.getId(),
+                savedEmployeeCourse.getStatus());
     }
 
     private Employee getEmployeeById(Long employeeId) {
-        return this.employeeRepository.findById(employeeId).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("employee.not.found", employeeId)));
+        return this.employeeRepository.findById(employeeId).orElseThrow(() -> {
+            LOGGER.error("Employee with ID {} not exists", employeeId);
+            return new ResourceNotFoundException(this.messageService.get("employee.not.found", employeeId));
+        });
     }
 
     private Course getCourseById(Long courseId) {
-        return this.courseRepository.findById(courseId).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("course.not.found", courseId)));
+        return this.courseRepository.findById(courseId).orElseThrow(() -> {
+            LOGGER.error("Course with ID {} not exists", courseId);
+            return new ResourceNotFoundException(this.messageService.get("course.not.found", courseId));
+        });
     }
 
     private EmployeeCourse getEmployeeCourseById(Long employeeCourseId) {
-        return this.employeeCourseRepository.findById(employeeCourseId).orElseThrow(() ->
-                new ResourceNotFoundException(this.messageService.get("employee.course.not.found")));
+        return this.employeeCourseRepository.findById(employeeCourseId).orElseThrow(() -> {
+            LOGGER.error("EmployeeCourse with ID {} not exists", employeeCourseId);
+            return new ResourceNotFoundException(this.messageService.get("employee.course.not.found"));
+        });
     }
 
 }

@@ -1,3 +1,12 @@
 spring:
   application:
     name: training-platform
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info, prometheus
+  endpoint:
+    health:
+      show-details: always
