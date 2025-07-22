@@ -6,7 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,14 +26,14 @@ public class Employee extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -1994969848795336868L;
 
-    @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @Email
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank
+    @Column(nullable = false)
     private String department;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)

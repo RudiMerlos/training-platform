@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmployeeCourseReadDto implements Serializable {
+public class EmployeeCourseDto implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1197535376671302036L;

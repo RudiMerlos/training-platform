@@ -19,12 +19,12 @@ public class CourseWriteDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -1252732771545144046L;
 
-    @NotBlank
+    @NotBlank(message = "{course.name.not.empty}")
     private String name;
 
     private String description;
 
-    @Positive
+    @Positive(message = "{course.expiration.days.positive}")
     private Long expirationDays;
 
 }

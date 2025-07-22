@@ -19,14 +19,14 @@ public class EmployeeWriteDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 5301575633413646243L;
 
-    @NotBlank
+    @NotBlank(message = "{employee.name.not.empty}")
     private String name;
 
-    @Email
-    @NotBlank
+    @Email(message = "{employee.email.invalid}")
+    @NotBlank(message = "{employee.email.not.empty}")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "{employee.department.not.empty}")
     private String department;
 
 }

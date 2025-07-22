@@ -28,10 +28,11 @@ public abstract class BaseEntity implements Serializable {
     protected Long id;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     protected LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(nullable = false)
     protected LocalDateTime modifiedAt;
 
 }

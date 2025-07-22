@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.annotations.RoleAdmin;
 import org.rmc.training_platform.annotations.RoleUser;
-import org.rmc.training_platform.dto.EmployeeCourseReadDto;
+import org.rmc.training_platform.dto.EmployeeCourseDto;
 import org.rmc.training_platform.service.EmployeeCourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,18 +29,18 @@ public class EmployeeCourseController {
 
     @RoleUser
     @GetMapping("/employee/{employeeId}")
-    public List<EmployeeCourseReadDto> getAllCoursesForEmployee(@PathVariable final Long employeeId) {
+    public List<EmployeeCourseDto> getAllCoursesForEmployee(@PathVariable final Long employeeId) {
         return this.employeeCourseService.getCoursesByEmployee(employeeId);
     }
 
     @GetMapping("/employee/{employeeId}/pending")
-    public List<EmployeeCourseReadDto> getPendingCoursesForEmployee(@PathVariable final Long employeeId) {
+    public List<EmployeeCourseDto> getPendingCoursesForEmployee(@PathVariable final Long employeeId) {
         return this.employeeCourseService.getPendingCoursesByEmployee(employeeId);
     }
 
     @PostMapping("/assign")
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeCourseReadDto assignCourse(@RequestParam final Long employeeId, @RequestParam final Long courseId) {
+    public EmployeeCourseDto assignCourse(@RequestParam final Long employeeId, @RequestParam final Long courseId) {
         return this.employeeCourseService.assignCourse(employeeId, courseId);
     }
 

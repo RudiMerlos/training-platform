@@ -6,7 +6,7 @@ import org.rmc.training_platform.domain.Course;
 import org.rmc.training_platform.domain.Employee;
 import org.rmc.training_platform.domain.EmployeeCourse;
 import org.rmc.training_platform.domain.enumeration.Status;
-import org.rmc.training_platform.dto.EmployeeCourseReadDto;
+import org.rmc.training_platform.dto.EmployeeCourseDto;
 import org.rmc.training_platform.exception.IllegalStatusException;
 import org.rmc.training_platform.exception.ResourceNotFoundException;
 import org.rmc.training_platform.mapper.EmployeeCourseMapper;
@@ -37,7 +37,7 @@ public class EmployeeCourseService {
     private Clock clock;
 
     @Transactional(readOnly = true)
-    public List<EmployeeCourseReadDto> getCoursesByEmployee(Long employeeId) {
+    public List<EmployeeCourseDto> getCoursesByEmployee(Long employeeId) {
         Employee employee = this.getEmployeeById(employeeId);
 
         return this.employeeCourseRepository.findByEmployee(employee).stream()
@@ -45,14 +45,14 @@ public class EmployeeCourseService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmployeeCourseReadDto> getPendingCoursesByEmployee(Long employeeId) {
+    public List<EmployeeCourseDto> getPendingCoursesByEmployee(Long employeeId) {
         Employee employee = this.getEmployeeById(employeeId);
 
         return this.employeeCourseRepository.findByEmployeeAndStatus(employee, Status.ASSIGNED).stream()
                 .map(this.employeeCourseMapper::entityToDto).toList();
     }
 
-    public EmployeeCourseReadDto assignCourse(Long employeeId, Long courseId) {
+    public EmployeeCourseDto assignCourse(Long employeeId, Long courseId) {
         Employee employee = this.getEmployeeById(employeeId);
         Course course = this.getCourseById(courseId);
 

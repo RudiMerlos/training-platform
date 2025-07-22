@@ -1,9 +1,10 @@
 package org.rmc.training_platform.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.annotations.RoleAdmin;
 import org.rmc.training_platform.domain.enumeration.Role;
-import org.rmc.training_platform.dto.UserReadDto;
+import org.rmc.training_platform.dto.UserLoginDto;
 import org.rmc.training_platform.dto.UserWriteDto;
 import org.rmc.training_platform.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class AuthController {
     @RoleAdmin
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody UserWriteDto userWrite) {
+    public void register(@Valid @RequestBody UserWriteDto userWrite) {
         this.authService.register(userWrite);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserReadDto userRead) {
+    public String login(@Valid @RequestBody UserLoginDto userRead) {
         return this.authService.authenticate(userRead);
     }
 

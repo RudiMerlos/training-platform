@@ -3,7 +3,7 @@ package org.rmc.training_platform.service;
 import lombok.RequiredArgsConstructor;
 import org.rmc.training_platform.domain.User;
 import org.rmc.training_platform.domain.enumeration.Role;
-import org.rmc.training_platform.dto.UserReadDto;
+import org.rmc.training_platform.dto.UserLoginDto;
 import org.rmc.training_platform.dto.UserWriteDto;
 import org.rmc.training_platform.exception.DuplicateFieldException;
 import org.rmc.training_platform.security.jwt.JwtService;
@@ -27,7 +27,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public String authenticate(final UserReadDto user) {
+    public String authenticate(final UserLoginDto user) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(),
                 user.getPassword());
 
@@ -43,7 +43,7 @@ public class AuthService {
     }
 
     public void register(final UserWriteDto user) {
-        this.checkAllFieldsRequired(user);
+        //this.checkAllFieldsRequired(user);
 
         this.checkIfUserExists(user.getUsername());
 
