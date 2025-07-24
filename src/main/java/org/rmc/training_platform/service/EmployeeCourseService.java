@@ -15,6 +15,9 @@ import org.rmc.training_platform.repository.CourseRepository;
 import org.rmc.training_platform.repository.EmployeeCourseRepository;
 import org.rmc.training_platform.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,8 @@ import java.util.List;
 @Transactional
 public class EmployeeCourseService {
 
+    private static final String EMPLOYEE_COURSES = "employeeCourses.";
+
     private final EmployeeRepository employeeRepository;
     private final CourseRepository courseRepository;
     private final EmployeeCourseRepository employeeCourseRepository;
@@ -39,6 +44,7 @@ public class EmployeeCourseService {
     private Clock clock;
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = EMPLOYEE_COURSES + "getCoursesByEmployee", key = "#employeeId")
     public List<EmployeeCourseDto> getCoursesByEmployee(Long employeeId) {
         Employee employee = this.getEmployeeById(employeeId);
 
@@ -47,6 +53,7 @@ public class EmployeeCourseService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = EMPLOYEE_COURSES + "getPendingCoursesByEmployee", key = "#employeeId")
     public List<EmployeeCourseDto> getPendingCoursesByEmployee(Long employeeId) {
         Employee employee = this.getEmployeeById(employeeId);
 
@@ -54,6 +61,10 @@ public class EmployeeCourseService {
                 .map(this.employeeCourseMapper::entityToDto).toList();
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EMPLOYEE_COURSES + "getCoursesByEmployee", key = "#employeeId"),
+            @CacheEvict(cacheNames = EMPLOYEE_COURSES + "getPendingCoursesByEmployee", key = "#employeeId")
+    })
     public EmployeeCourseDto assignCourse(Long employeeId, Long courseId) {
         LOGGER.info("Assigning employee with ID {} to course with ID {}", employeeId, courseId);
         Employee employee = this.getEmployeeById(employeeId);
@@ -77,6 +88,10 @@ public class EmployeeCourseService {
         return this.employeeCourseMapper.entityToDto(savedEmployeeCourse);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EMPLOYEE_COURSES + "getCoursesByEmployee", allEntries = true),
+            @CacheEvict(cacheNames = EMPLOYEE_COURSES + "getPendingCoursesByEmployee", allEntries = true)
+    })
     public void markAsCompleted(Long employeeCourseId) {
         LOGGER.info("Marking as completed employeeCourse with ID: {}", employeeCourseId);
         EmployeeCourse employeeCourse = this.getEmployeeCourseById(employeeCourseId);

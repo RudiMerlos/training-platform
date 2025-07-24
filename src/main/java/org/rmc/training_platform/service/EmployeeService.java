@@ -9,6 +9,9 @@ import org.rmc.training_platform.exception.DuplicateFieldException;
 import org.rmc.training_platform.exception.ResourceNotFoundException;
 import org.rmc.training_platform.mapper.EmployeeMapper;
 import org.rmc.training_platform.repository.EmployeeRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,23 +23,32 @@ import java.util.List;
 @Transactional
 public class EmployeeService implements CrudBaseService<EmployeeWriteDto, EmployeeReadDto> {
 
+    private static final String EMPLOYEES = "emloyees.";
+
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
     private final MessageService messageService;
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(EMPLOYEES + "getAll")
     public List<EmployeeReadDto> getAll() {
         return this.employeeMapper.entityToDto(this.employeeRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = EMPLOYEES + "getById", key = "#id")
     public EmployeeReadDto getById(Long id) {
         return this.employeeMapper.entityToDto(this.getEmployeeById(id));
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EMPLOYEES + "getAll", allEntries = true),
+            @CacheEvict(cacheNames = EMPLOYEES + "getById", key = "#result.id", condition = "#result != null"),
+            @CacheEvict(cacheNames = EMPLOYEES + "getByEmail", key = "#result.email", condition = "#result != null")
+    })
     public EmployeeReadDto create(EmployeeWriteDto employeeWrite) {
         LOGGER.info("Creating employee with email: {}", employeeWrite.getEmail());
         this.checkIfExistsEmail(employeeWrite.getEmail());
@@ -46,6 +58,11 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EMPLOYEES + "getAll", allEntries = true),
+            @CacheEvict(cacheNames = EMPLOYEES + "getById", key = "#id"),
+            @CacheEvict(cacheNames = EMPLOYEES + "getByEmail", allEntries = true)
+    })
     public EmployeeReadDto update(Long id, EmployeeWriteDto employeeWrite) {
         LOGGER.info("Updating employee with ID: {}", id);
         Employee employee = this.getEmployeeById(id);
@@ -61,6 +78,11 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EMPLOYEES + "getAll", allEntries = true),
+            @CacheEvict(cacheNames = EMPLOYEES + "getById", key = "#id"),
+            @CacheEvict(cacheNames = EMPLOYEES + "getByEmail", allEntries = true)
+    })
     public void delete(Long id) {
         LOGGER.info("Deleting employee with ID: {}", id);
         if (!this.employeeRepository.existsById(id)) {
@@ -72,6 +94,7 @@ public class EmployeeService implements CrudBaseService<EmployeeWriteDto, Employ
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = EMPLOYEES + "getByEmail", key = "#email")
     public EmployeeReadDto getByEmail(String email) {
         return this.employeeRepository.findByEmail(email).map(this.employeeMapper::entityToDto).orElseThrow(() -> {
             LOGGER.error("Employee with email {} not exists", email);
