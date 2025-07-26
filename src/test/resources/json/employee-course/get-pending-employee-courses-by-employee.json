@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "employeeId": 1,
+    "courseId": 1,
+    "assignedOn": "2025-06-08",
+    "status": "ASSIGNED"
+  }
+]

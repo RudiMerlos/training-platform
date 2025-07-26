@@ -1,0 +1,4 @@
+{
+  "status": 400,
+  "message": "The course has already been assigned to this employee."
+}

@@ -1,6 +1,7 @@
 package org.rmc.training_platform.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +38,12 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = this.extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token);
+        try {
+            final String username = this.extractUsername(token);
+            return username.equals(userDetails.getUsername()) && !this.isTokenExpired(token);
+        } catch(ExpiredJwtException ex) {
+            return false;
+        }
     }
 
     private Claims extractAllClaims(String token) {

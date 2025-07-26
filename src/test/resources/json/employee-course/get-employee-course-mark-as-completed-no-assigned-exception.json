@@ -1,0 +1,4 @@
+{
+  "status": 400,
+  "message": "Only assigned courses can be marked as completed."
+}

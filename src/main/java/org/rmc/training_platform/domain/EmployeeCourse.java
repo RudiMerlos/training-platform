@@ -10,10 +10,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.rmc.training_platform.domain.enumeration.Status;
 
 import java.io.Serial;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 @Table(name = "employee_course", uniqueConstraints = @UniqueConstraint(columnNames = {"employee_id", "course_id"}))
 public class EmployeeCourse extends BaseEntity {

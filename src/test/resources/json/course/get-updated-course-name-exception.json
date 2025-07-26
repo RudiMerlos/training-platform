@@ -1,0 +1,4 @@
+{
+  "status": 409,
+  "message": "There is already a course with the name Course 2."
+}

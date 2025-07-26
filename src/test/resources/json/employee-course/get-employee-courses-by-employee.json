@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "employeeId": 1,
+    "courseId": 1,
+    "assignedOn": "2025-06-08",
+    "status": "ASSIGNED"
+  },
+  {
+    "id": 2,
+    "employeeId": 1,
+    "courseId": 2,
+    "assignedOn": "2025-06-08",
+    "status": "EXPIRED"
+  },
+  {
+    "id": 3,
+    "employeeId": 1,
+    "courseId": 3,
+    "assignedOn": "2025-06-08",
+    "status": "COMPLETED"
+  }
+]

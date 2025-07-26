@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Course 1",
+    "description": "Description 1",
+    "expirationDays": 30
+  },
+  {
+    "id": 2,
+    "name": "Course 2",
+    "description": "Description 2",
+    "expirationDays": 20
+  },
+  {
+    "id": 3,
+    "name": "Course 3",
+    "description": "Description 3",
+    "expirationDays": 25
+  }
+]

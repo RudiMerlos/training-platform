@@ -1,0 +1,20 @@
+spring:
+  security:
+    jwt:
+      secret-key: test-f55c0f524cdc84303291192aacc46d5a86f1a259087a06e0ece82d0b754eeb7d
+      expiration: 3600000 # an hour
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: null
+  h2:
+    console:
+      enabled: true
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+        dialect: org.hibernate.dialect.H2Dialect
