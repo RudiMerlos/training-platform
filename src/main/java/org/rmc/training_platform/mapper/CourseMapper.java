@@ -16,6 +16,9 @@ public interface CourseMapper {
 
     List<CourseReadDto> entityToDto(List<Course> entities);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "employeeCourses", ignore = true)
     Course dtoToEntity(CourseWriteDto dto);
 

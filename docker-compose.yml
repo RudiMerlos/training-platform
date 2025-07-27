@@ -19,5 +19,21 @@ services:
     ports:
       - "6379:6379"
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trainingplatform_backend
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      PASSWORD_DB: ${PASSWORD_DB}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
 volumes:
   postgres_data:

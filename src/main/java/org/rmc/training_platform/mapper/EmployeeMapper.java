@@ -16,6 +16,9 @@ public interface EmployeeMapper {
 
     List<EmployeeReadDto> entityToDto(List<Employee> entities);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "employeeCourses", ignore = true)
     Employee dtoToEntity(EmployeeWriteDto dto);
 

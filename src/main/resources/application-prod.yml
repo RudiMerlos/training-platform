@@ -1,0 +1,16 @@
+spring:
+  data:
+    redis:
+      host: redis
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+  datasource:
+    url: jdbc:postgresql://postgres:5432/trainingplatformdb
+    username: trainingplatform_user
+    password: ${PASSWORD_DB}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
