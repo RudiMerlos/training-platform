@@ -1,87 +1,64 @@
 ## Proyecto de Ejercicio: Plataforma de Formación Interna para Empleados
 
-### 🌍 Descripción General
-Una aplicación backend que permita a una empresa gestionar la formación interna de sus empleados,
-con las siguientes funcionalidades:
+### Descripción General
+Aplicación backend que permita a una empresa gestionar la formación interna de sus empleados, con las siguientes
+funcionalidades:
 
 - CRUD de empleados
 - CRUD de cursos de formación
 - Asignación de cursos a empleados
 - Consulta del estado de la formación
 
-Esto nos permite tocar casi todos los puntos del roadmap.
-
-### 🚀 Tecnologías y herramientas
-- Java 17+
+### Tecnologías y herramientas
+- Java 21
 - Spring Boot (Data, Security, Validation, Web, Cache, Actuator)
-- Maven o Gradle
-- PostgreSQL (o H2 para tests)
+- Gradle
+- PostgreSQL (y H2 para tests)
 - JPA/Hibernate
-- Swagger / OpenAPI
+- Swagger/OpenAPI
 - Docker
-- Testcontainers, JUnit5, Mockito
+- JUnit5, Mockito
 - Redis (cache)
-- Kafka (mensajería simulada)
 
-### 🔍 Entidades principales
-- Employee : id, name, email, department
-- Course : id, name, description, expirationDays
-- EmployeeCourse : id, employee_id, course_id, assigned_on, status (ASSIGNED, COMPLETED,
-EXPIRED)
-
-### 📊 Funcionalidades requeridas
-#### CRUD y negocio
+### Enpoints principales
 - Crear/leer/actualizar/borrar empleados y cursos
-- Asignar cursos a empleados
-- Marcar como completado
+- Ver todos los cursos de un empleado
 - Ver cursos pendientes por empleado
-- Validar que un curso se ha completado antes de su vencimiento
+- Asignar cursos a empleados
+- Marcar cursos como completado/expirado por empleado
 
-#### Seguridad
+### Seguridad
 - Roles: ADMIN , USER
 - Autenticación JWT
 - Autorización por rol en endpoints REST
 
-#### Documentación
-- Swagger/OpenAPI generado automáticamente
+### Documentación
+- Swagger/OpenAPI (configurado para autenticación por token)
 
-#### Logging y observabilidad
-- Configurar SLF4J + Logback
-- Usar @Slf4j para registrar eventos importantes
-- Exponer /actuator/health , /actuator/metrics
+### Logging y observabilidad
+- SLF4J + Logback
+- Spring actuator
 
-#### Configuración y entornos
+### Configuración y entornos
 - application-dev.yml , application-prod.yml , application-test.yml
-- Uso de perfiles Spring
 
-#### Validaciones y errores
-- Validar que email es válido, campos obligatorios
-- Manejar errores con @ControllerAdvice
+### Validaciones y errores
+- Se validan los campos obligatorios así como la correcta definición de los emails.
+- Manejo de errores con @ControllerAdvice
 
-#### Tests
-- Unitarios (EmployeeService, CourseService)
-- Integración (con H2 o Testcontainers)
+### Caché
+- Se cachean emploeados y cursos con Caffeine y Redis.
 
-#### Docker y despliegue
+### Tests
+- Unitarios (Servicios)
+- Integración (con H2)
+
+### Docker y despliegue
 - Dockerfile
-- docker-compose con PostgreSQL + Redis
+- docker-compose para el despliegue con PostgreSQL + Redis
+- Instrucciones para el deploy:
+  - Está configurado para desplegarse el perfil **prod**.
+  - La clave secreta para generar el token (JWT) y la contraseña de BD están parametrizadas en el fichero **.env**. En
+    este caso se distribuye en el proyecto pero por cuestiones de seguridad debería incluirse en el **.gitignore**.
 
-#### Caché
-- Cachear cursos por ID (EhCache o Caffeine)
-
-#### Mensajería (opcional)
-- Al asignar curso, enviar evento a Kafka simulado (log de auditoría, por ejemplo)
-
-### 🏆 Evaluación del ejercicio
-Para evaluar el ejercicio completo:
-1. Arquitectura: organización limpia, separación por capas, paquetes
-2. Calidad de código: principios SOLID, testable, legible
-3. Spring: uso correcto de perfiles, configuraciones, seguridad, JPA, validaciones
-4. Infraestructura: contenedores, Docker, logs
-5. Tests: cobertura, aislamiento, uso de mocks y base real
-6. API: buena estructura REST, documentación clara, buen manejo de errores
-
-### ✅ Resultado final esperado
-Un repositorio con: - Carpeta /src bien estructurada - Scripts o docker-compose.yml - README
-explicando: - Tecnologías usadas - Cómo levantarlo en local - Endpoints principales (con Swagger) -
-Usuarios de prueba y roles - Áreas cubiertas del roadmap
+        $docker compose up --build
