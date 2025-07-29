@@ -21,6 +21,7 @@ funcionalidades:
 - Redis (cache)
 
 ### Enpoints principales
+- Login, registro y listado de roles de usuarios.
 - Crear/leer/actualizar/borrar empleados y cursos
 - Ver todos los cursos de un empleado
 - Ver cursos pendientes por empleado
@@ -47,7 +48,7 @@ funcionalidades:
 - Manejo de errores con @ControllerAdvice
 
 ### Caché
-- Se cachean emploeados y cursos con Caffeine y Redis.
+- Se cachean empleados y cursos con Caffeine y Redis.
 
 ### Tests
 - Unitarios (Servicios)
